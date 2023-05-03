@@ -26,21 +26,29 @@ int main(int argc, char* argv[])
 {
     // Initialization
     //--------------------------------------------------------------------------------------
+    //set screen height and width
     int screenWidth = 800;
     int screenHeight = 450;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
-    DataFile data;
-    int currentRecordIdx = 0;
+    DataFile data; //initialise data file 
+    int currentRecordIdx = 0; //set current record to 0
 
-    data.Load("npc_data.dat");
+    ///////////////////////////////////////////////
+    /// CHANGE THIS FUNCTION
+    ///////////////////////////////////////////////
+    data.Load("npc_data.dat"); //load the record file
 
-    DataFile::Record* currentRecord = data.GetRecord(currentRecordIdx);
-    Texture2D recordTexture = LoadTextureFromImage(currentRecord->image);
+
+    /////////////////////////////////////////////////
+    ////Modify this to work with random reads
+    /////////////////////////////////////////////////
+    DataFile::Record* currentRecord = data.GetRecord(currentRecordIdx); //load the first record from the record array
+    Texture2D recordTexture = LoadTextureFromImage(currentRecord->image); //load the texture from the current record
 
 
-    SetTargetFPS(60);
+    SetTargetFPS(60); //sets target frame reate for raylib
     //--------------------------------------------------------------------------------------
 
     // Main game loop
@@ -51,26 +59,29 @@ int main(int argc, char* argv[])
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
 
-        if (IsKeyPressed(KEY_LEFT))
+        if (IsKeyPressed(KEY_LEFT)) ///when left key is pressed
         {
-            currentRecordIdx--;
-            if (currentRecordIdx < 0)
+            currentRecordIdx--; //reduce current record index by 1
+            if (currentRecordIdx < 0) //if current record index is less then 0
             {
-                currentRecordIdx = 0;
+                currentRecordIdx = 0; //set current record index to 0
             }
-            currentRecord = data.GetRecord(currentRecordIdx);
-            recordTexture = LoadTextureFromImage(currentRecord->image);
+            //////////////////////////////////////////////////////////
+            ////MODIFY TO WORK WITH RANDOM READS
+            //////////////////////////////////////////////////////////
+            currentRecord = data.GetRecord(currentRecordIdx); //load the current record index from array
+            recordTexture = LoadTextureFromImage(currentRecord->image);//load the texture from the current record image
         }
 
-        if (IsKeyPressed(KEY_RIGHT))
+        if (IsKeyPressed(KEY_RIGHT))//if right key is pressed
         {
-            currentRecordIdx++;
-            if (currentRecordIdx >= data.GetRecordCount())
+            currentRecordIdx++;//increase the current record index by 1
+            if (currentRecordIdx >= data.GetRecordCount()) //if current index is greater then record count
             {
-                currentRecordIdx = data.GetRecordCount();
+                currentRecordIdx = data.GetRecordCount(); //set current index to the total record count
             }
-            currentRecord = data.GetRecord(currentRecordIdx);
-            recordTexture = LoadTextureFromImage(currentRecord->image);
+            currentRecord = data.GetRecord(currentRecordIdx); //load the current record index from array
+            recordTexture = LoadTextureFromImage(currentRecord->image);//load the texture from the current record image
         }
 
 
@@ -78,13 +89,15 @@ int main(int argc, char* argv[])
         //----------------------------------------------------------------------------------
         BeginDrawing();
 
-        ClearBackground(RAYWHITE);
+        ClearBackground(RAYWHITE); //set background to white
 
-        DrawTexture(recordTexture, 300, 50, WHITE);
+        DrawTexture(recordTexture, 300, 50, WHITE); //display record picture
 
-        DrawText("NAME", 10, 50, 20, LIGHTGRAY);
+        //display record name
+        DrawText("NAME", 10, 50, 20, LIGHTGRAY); 
         DrawText(currentRecord->name.c_str(), 10, 80, 20, LIGHTGRAY);
 
+        //display record  name
         DrawText("AGE", 10, 120, 20, LIGHTGRAY);
         DrawText(to_string(currentRecord->age).c_str(), 10, 150, 20, LIGHTGRAY);
 
