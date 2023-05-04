@@ -76,9 +76,9 @@ int main(int argc, char* argv[])
         if (IsKeyPressed(KEY_RIGHT))//if right key is pressed
         {
             currentRecordIdx++;//increase the current record index by 1
-            if (currentRecordIdx >= data.GetRecordCount()) //if current index is greater then record count
+            if (currentRecordIdx >= (data.GetRecordCount() - 1)) //if current index is greater then record count - 1
             {
-                currentRecordIdx = data.GetRecordCount(); //set current index to the total record count
+                currentRecordIdx = (data.GetRecordCount() - 1); //set current index to the total record count -1
             }
             currentRecord = data.GetRecord(currentRecordIdx); //load the current record index from array
             recordTexture = LoadTextureFromImage(currentRecord->image);//load the texture from the current record image

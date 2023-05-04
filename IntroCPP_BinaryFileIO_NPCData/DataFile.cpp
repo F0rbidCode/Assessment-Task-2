@@ -1,5 +1,6 @@
 #include "DataFile.h"
 #include <fstream>
+#include <string>
 using namespace std;
 
 DataFile::DataFile()
@@ -97,21 +98,33 @@ void DataFile::Load(string filename)
 		infile.read(imgdata, imageSize); //read in the image data
 
 		Image img = LoadImageEx((Color*)imgdata, width, height); //load the imagedate as an image and save it as img
-		char* name = new char[nameSize]; //create variable to store name
+		//char* name = new char[nameSize + 1]; //create variable to store name
 		int age = 0; //create variable to store age
-				
-		infile.read((char*)name, nameSize); //read the name from file
+			
+		/////////////////////////////////////////////////
+		/////EDITS TO FIX NAME BUG
+		////////////////////////////////////////////////
+		int posBeforeName = infile.tellg(); //get the position before name
+		
+		string name; //create a string to store name
+		getline(infile, name);//read name from file
+		infile.seekg(posBeforeName + nameSize); //set position of filepointer to be after name but before age
+
+		//infile.read((char*)name, nameSize); //read the name from file
 		infile.read((char*)&age, ageSize); //read the age
+
+		//strcat_s((char*)name, nameSize + 1, ""); //add null terminator to the end of string
 
 		Record* r = new Record(); //create new record
 		r->image = img; //load img to record
-		r->name = string(name); //load name into record
+		//r->name = string(name); //load name into record
+		r->name = name; //load name into record
 		r->age = age; //load name into record
 		records.push_back(r);
 
 		//clean up data
 		delete [] imgdata;
-		delete [] name;
+		//delete [] name;
 	}
 
 	//close file
