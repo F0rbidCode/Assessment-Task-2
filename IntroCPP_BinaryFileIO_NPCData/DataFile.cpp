@@ -3,6 +3,7 @@
 #include <string>
 using namespace std;
 
+
 DataFile::DataFile()
 {
 	recordCount = 0; //used to store the number of records
@@ -64,6 +65,125 @@ void DataFile::Save(string filename)
 	}
 
 	outfile.close();
+}
+
+//////////////////////////////////////////////
+//////RANDOM READ
+///////////////////////////////////////////////
+DataFile::Record DataFile :: LoadRecord(string filename, int index)
+{
+	if (index == 0)
+	{
+		Clear();
+
+		ifstream infile(filename, ios::binary);//initiate ifstream
+
+		recordCount = 0; //set record count to 0
+		infile.read((char*)&recordCount, sizeof(int)); //read the record count from file
+
+		//detirmin the begining of the first record
+		startOfRecords = infile.tellg();
+
+		////Read the required record
+		// 
+		//initialise variables to store name length age lenght, image width heifght and size
+		int nameSize = 0;
+		int ageSize = 0;
+		int width = 0, height = 0, format = 0, imageSize = 0;
+
+		infile.read((char*)&width, sizeof(int)); //read image width
+		infile.read((char*)&height, sizeof(int)); //read image height
+
+		imageSize = sizeof(Color) * width * height; //set image size to be height * width
+
+		infile.read((char*)&nameSize, sizeof(int)); //read in the length of name
+		infile.read((char*)&ageSize, sizeof(int)); //read in the length of age
+
+		char* imgdata = new char[imageSize]; //create a variable to store the image data
+		infile.read(imgdata, imageSize); //read in the image data
+
+		Image img = LoadImageEx((Color*)imgdata, width, height); //load the imagedate as an image and save it as img
+		char* name = new char[nameSize + 1]; //create variable to store name
+		int age = 0; //create variable to store age
+
+		/////////////////////////////////////////////////
+		/////EDITS TO FIX NAME BUG
+		////////////////////////////////////////////////
+
+		infile.read((char*)name, nameSize); //read the name from file
+		infile.read((char*)&age, ageSize); //read the age
+
+		name[nameSize] = '\0'; //add null reminator to end of name based on name size variable	
+
+		//determin the length of the records
+		recordLength = infile.tellg();
+		recordLength = recordLength - startOfRecords;
+
+		Record* r = new Record(); //create new record
+		r->image = img; //load img to record
+		r->name = string(name); //load name into record		
+		r->age = age; //load name into record
+		
+		//clean up data
+		delete[] imgdata;
+		delete[] name;
+
+		infile.close();
+
+		return *r;
+	}
+
+	else
+	{
+		Clear();
+
+		ifstream infile(filename, ios::binary);//initiate ifstream
+
+		int recodStart = (startOfRecords + recordLength) + recordLength;
+		infile.seekg(recodStart, ios::beg);
+
+		int nameSize = 0;
+		int ageSize = 0;
+		int width = 0, height = 0, format = 0, imageSize = 0;
+
+		infile.read((char*)&width, sizeof(int)); //read image width
+		infile.read((char*)&height, sizeof(int)); //read image height
+
+		imageSize = sizeof(Color) * width * height; //set image size to be height * width
+
+		infile.read((char*)&nameSize, sizeof(int)); //read in the length of name
+		infile.read((char*)&ageSize, sizeof(int)); //read in the length of age
+
+		char* imgdata = new char[imageSize]; //create a variable to store the image data
+		infile.read(imgdata, imageSize); //read in the image data
+
+		Image img = LoadImageEx((Color*)imgdata, width, height); //load the imagedate as an image and save it as img
+		char* name = new char[nameSize + 1]; //create variable to store name
+		int age = 0; //create variable to store age
+
+		/////////////////////////////////////////////////
+		/////EDITS TO FIX NAME BUG
+		////////////////////////////////////////////////
+
+		infile.read((char*)name, nameSize); //read the name from file
+		infile.read((char*)&age, ageSize); //read the age
+
+		name[nameSize] = '\0'; //add null reminator to end of name based on name size variable	
+		
+		Record* r = new Record(); //create new record
+		r->image = img; //load img to record
+		r->name = string(name); //load name into record		
+		r->age = age; //load name into record
+		
+
+		//clean up data
+		delete[] imgdata;
+		delete[] name;
+
+		infile.close();
+
+		return *r;
+	}
 }
 
 ///////////////////////////////////////////////////

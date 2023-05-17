@@ -29,6 +29,7 @@ int main(int argc, char* argv[])
     //set screen height and width
     int screenWidth = 800;
     int screenHeight = 450;
+    int recordCount = 0;
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
@@ -38,14 +39,19 @@ int main(int argc, char* argv[])
     ///////////////////////////////////////////////
     /// CHANGE THIS FUNCTION
     ///////////////////////////////////////////////
-    data.Load("npc_data.dat"); //load the record file
+    // data.Load("npc_data.dat"); //load the record file
+
+    
 
 
     /////////////////////////////////////////////////
     ////Modify this to work with random reads
     /////////////////////////////////////////////////
-    DataFile::Record* currentRecord = data.GetRecord(currentRecordIdx); //load the first record from the record array
-    Texture2D recordTexture = LoadTextureFromImage(currentRecord->image); //load the texture from the current record
+    //DataFile::Record* currentRecord = data.GetRecord(currentRecordIdx); //load the first record from the record array
+    
+    DataFile :: Record currentRecord = data.LoadRecord("npc_data.dat", currentRecordIdx); //load the record based on the record index
+    Texture2D recordTexture = LoadTextureFromImage(currentRecord.image); //load the texture from the current record
+    recordCount = data.GetRecordCount();
 
 
     SetTargetFPS(60); //sets target frame reate for raylib
@@ -69,19 +75,25 @@ int main(int argc, char* argv[])
             //////////////////////////////////////////////////////////
             ////MODIFY TO WORK WITH RANDOM READS
             //////////////////////////////////////////////////////////
-            currentRecord = data.GetRecord(currentRecordIdx); //load the current record index from array
-            recordTexture = LoadTextureFromImage(currentRecord->image);//load the texture from the current record image
+           
+            currentRecord = data.LoadRecord("npc_data.dat", currentRecordIdx); // load the record based on the record index
+
+           // currentRecord = data.GetRecord(currentRecordIdx); //load the current record index from array
+            recordTexture = LoadTextureFromImage(currentRecord.image);//load the texture from the current record image
         }
 
         if (IsKeyPressed(KEY_RIGHT))//if right key is pressed
         {
             currentRecordIdx++;//increase the current record index by 1
-            if (currentRecordIdx >= (data.GetRecordCount() - 1)) //if current index is greater then record count - 1
+            if (currentRecordIdx >= (recordCount - 1)) //if current index is greater then record count - 1
             {
-                currentRecordIdx = (data.GetRecordCount() - 1); //set current index to the total record count -1
+                currentRecordIdx = (recordCount - 1); //set current index to the total record count -1
             }
-            currentRecord = data.GetRecord(currentRecordIdx); //load the current record index from array
-            recordTexture = LoadTextureFromImage(currentRecord->image);//load the texture from the current record image
+
+            currentRecord = data.LoadRecord("npc_data.dat", currentRecordIdx); //load the record based on the record index
+
+            //currentRecord = data.GetRecord(currentRecordIdx); //load the current record index from array
+            recordTexture = LoadTextureFromImage(currentRecord.image);//load the texture from the current record image
         }
 
 
@@ -95,11 +107,11 @@ int main(int argc, char* argv[])
 
         //display record name
         DrawText("NAME", 10, 50, 20, LIGHTGRAY); 
-        DrawText(currentRecord->name.c_str(), 10, 80, 20, LIGHTGRAY);
+        DrawText(currentRecord.name.c_str(), 10, 80, 20, LIGHTGRAY);
 
         //display record  name
         DrawText("AGE", 10, 120, 20, LIGHTGRAY);
-        DrawText(to_string(currentRecord->age).c_str(), 10, 150, 20, LIGHTGRAY);
+        DrawText(to_string(currentRecord.age).c_str(), 10, 150, 20, LIGHTGRAY);
 
         EndDrawing();
         //----------------------------------------------------------------------------------

@@ -17,6 +17,9 @@ public:
 
 private:
 	int recordCount;
+
+	float startOfRecords;
+	float recordLength;
 	std::vector<Record*> records;	// delete this vector. Load only the required record 
 
 
@@ -27,6 +30,8 @@ public:
 
 	void AddRecord(string imageFilename, string name, int age);
 	Record* GetRecord(int index);
+
+	Record LoadRecord(string filename, int index);
 
 	int GetRecordCount() { return recordCount; };
 
