@@ -20,7 +20,8 @@ private:
 
 	float startOfRecords;
 	float recordLength;
-	std::vector<Record*> records;	// delete this vector. Load only the required record 
+	//std::vector<Record*> records;	// delete this vector. Load only the required record
+	std::vector<int> starts;
 
 
 
@@ -31,6 +32,7 @@ public:
 	void AddRecord(string imageFilename, string name, int age);
 	Record* GetRecord(int index);
 
+	void GetPositions(string filename);
 	Record LoadRecord(string filename, int index);
 
 	int GetRecordCount() { return recordCount; };
@@ -39,7 +41,7 @@ public:
 	void Load(string filename);
 
 private:
-	void Clear();
+	//void Clear(); ///No longer needed as vector has been removed
 
 };
 

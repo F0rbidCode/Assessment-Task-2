@@ -34,24 +34,27 @@ int main(int argc, char* argv[])
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
     DataFile data; //initialise data file 
-    int currentRecordIdx = 0; //set current record to 0
+    
 
     ///////////////////////////////////////////////
     /// CHANGE THIS FUNCTION
     ///////////////////////////////////////////////
-    // data.Load("npc_data.dat"); //load the record file
-
-    
+    //data.Load("npc_data.dat"); //load the record file
+    data.GetPositions("npc_data.dat");
+    int currentRecordIdx = 0; //set current record to 0
 
 
     /////////////////////////////////////////////////
     ////Modify this to work with random reads
     /////////////////////////////////////////////////
     //DataFile::Record* currentRecord = data.GetRecord(currentRecordIdx); //load the first record from the record array
-    
+    recordCount = data.GetRecordCount();
+
+   
+
     DataFile :: Record currentRecord = data.LoadRecord("npc_data.dat", currentRecordIdx); //load the record based on the record index
     Texture2D recordTexture = LoadTextureFromImage(currentRecord.image); //load the texture from the current record
-    recordCount = data.GetRecordCount();
+    
 
 
     SetTargetFPS(60); //sets target frame reate for raylib
