@@ -1,7 +1,7 @@
 #include "DataFile.h"
-#include <fstream>
-#include <string>
-#include <iostream>
+
+
+
 
 using namespace std;
 
@@ -133,11 +133,11 @@ void DataFile :: GetPositions(string filename)
 //////////////////////////////////////////////
 //////RANDOM READ
 ///////////////////////////////////////////////
-DataFile::Record DataFile :: LoadRecord(string filename, int index)
+unique_ptr<DataFile::Record> DataFile :: LoadRecord(string filename, int index)
 {	
-
 		
-		ifstream infile(filename, ios::binary);//initiate ifstream
+		
+		infile.open(filename, ios::binary);//initiate ifstream
 
 		int recodStart = starts[index]; //get the start point for the desired record
 		infile.seekg(recodStart, ios::beg); //set the position in file to the begining of the desired record
@@ -170,7 +170,7 @@ DataFile::Record DataFile :: LoadRecord(string filename, int index)
 
 		name[nameSize] = '\0'; //add null reminator to end of name based on name size variable	
 		
-		Record* r = new Record(); //create new record
+		unique_ptr<Record> r (new Record()); //create new record
 		r->image = img; //load img to record
 		r->name = string(name); //load name into record		
 		r->age = age; //load name into record
@@ -179,11 +179,12 @@ DataFile::Record DataFile :: LoadRecord(string filename, int index)
 		//clean up data
 		delete[] imgdata;
 		delete[] name;
+		name = NULL;
+		imgdata = NULL;
 
 		infile.close(); //close the file
 
-		return *r; //return the record
-	
+		return r; //return the record
 }
 
 ///////////////////////////////////////////////////

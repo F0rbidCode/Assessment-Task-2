@@ -36,14 +36,14 @@ int main(int argc, char* argv[])
 
     InitWindow(screenWidth, screenHeight, "raylib [core] example - basic window");
 
-    DataFile data; //initialise data file 
+    DataFile* data = new DataFile; //initialise data file 
     
 
     ///////////////////////////////////////////////
     /// CHANGE THIS FUNCTION
     ///////////////////////////////////////////////
     //data.Load("npc_data.dat"); //load the record file
-    data.GetPositions("npc_data.dat");
+    data->GetPositions("npc_data.dat");
     int currentRecordIdx = 0; //set current record to 0
 
 
@@ -51,11 +51,11 @@ int main(int argc, char* argv[])
     ////Modify this to work with random reads
     /////////////////////////////////////////////////
     //DataFile::Record* currentRecord = data.GetRecord(currentRecordIdx); //load the first record from the record array
-    recordCount = data.GetRecordCount();
+    recordCount = data->GetRecordCount();
 
    
 
-    DataFile :: Record currentRecord = data.LoadRecord("npc_data.dat", currentRecordIdx); //load the record based on the record index
+    DataFile :: Record currentRecord = *(data->LoadRecord("npc_data.dat", currentRecordIdx)); //load the record based on the record index
     Texture2D recordTexture = LoadTextureFromImage(currentRecord.image); //load the texture from the current record
     
 
@@ -71,6 +71,8 @@ int main(int argc, char* argv[])
         // TODO: Update your variables here
         //----------------------------------------------------------------------------------
 
+       
+
         if (IsKeyPressed(KEY_LEFT)) ///when left key is pressed
         {
             currentRecordIdx--; //reduce current record index by 1
@@ -82,7 +84,7 @@ int main(int argc, char* argv[])
             ////MODIFY TO WORK WITH RANDOM READS
             //////////////////////////////////////////////////////////
            
-            currentRecord = data.LoadRecord("npc_data.dat", currentRecordIdx); // load the record based on the record index
+            currentRecord = *(data->LoadRecord("npc_data.dat", currentRecordIdx)); // load the record based on the record index
 
            // currentRecord = data.GetRecord(currentRecordIdx); //load the current record index from array
             recordTexture = LoadTextureFromImage(currentRecord.image);//load the texture from the current record image
@@ -96,7 +98,7 @@ int main(int argc, char* argv[])
                 currentRecordIdx = (recordCount - 1); //set current index to the total record count -1
             }
 
-            currentRecord = data.LoadRecord("npc_data.dat", currentRecordIdx); //load the record based on the record index
+            currentRecord = *(data->LoadRecord("npc_data.dat", currentRecordIdx)); //load the record based on the record index
 
             //currentRecord = data.GetRecord(currentRecordIdx); //load the current record index from array
             recordTexture = LoadTextureFromImage(currentRecord.image);//load the texture from the current record image
@@ -126,6 +128,8 @@ int main(int argc, char* argv[])
     // De-Initialization
     //--------------------------------------------------------------------------------------   
     CloseWindow();        // Close window and OpenGL context
+    delete data;
+    data = nullptr;
     //--------------------------------------------------------------------------------------
 
     return 0;

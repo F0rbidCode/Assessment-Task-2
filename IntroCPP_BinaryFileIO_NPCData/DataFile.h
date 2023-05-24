@@ -3,6 +3,10 @@
 #include "raylib.h"
 #include <string>
 #include <vector>
+#include <iostream>
+#include <memory>
+#include <fstream>
+#include <string>
 
 using namespace std;
 
@@ -20,6 +24,7 @@ private:
 
 	float startOfRecords;
 	float recordLength;
+	ifstream infile;
 	//std::vector<Record*> records;	// delete this vector. Load only the required record
 	std::vector<int> starts;
 
@@ -29,16 +34,16 @@ public:
 	DataFile();
 	~DataFile();
 
-	void AddRecord(string imageFilename, string name, int age);
-	Record* GetRecord(int index);
+	//void AddRecord(string imageFilename, string name, int age);
+	//Record* GetRecord(int index);
 
 	void GetPositions(string filename);
-	Record LoadRecord(string filename, int index);
+	unique_ptr<Record> LoadRecord(string filename, int index);
 
 	int GetRecordCount() { return recordCount; };
 
-	void Save(string filename);
-	void Load(string filename);
+	//void Save(string filename);
+	//void Load(string filename);
 
 private:
 	//void Clear(); ///No longer needed as vector has been removed
